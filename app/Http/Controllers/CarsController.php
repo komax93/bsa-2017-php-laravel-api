@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\CarRepository;
 use Illuminate\Http\Request;
+use App\Car;
 
 class CarsController extends Controller
 {
@@ -16,10 +17,27 @@ class CarsController extends Controller
 
     public function index()
     {
-        return response()->json(
+        // First option
+        /*return response()->json(
 
             $this->carRepository->getAll()->map(function($item) {
                 return collect($item)->only(['id', 'model', 'year', 'color', 'price']);
+            })
+
+        );*/
+
+
+        // Second option
+        return response()->json(
+
+            $this->carRepository->getAll()->map(function(Car $car) {
+                return [
+                    'id' => $car->getId(),
+                    'model' => $car->getModel(),
+                    'color' => $car->getColor(),
+                    'year' => $car->getYear(),
+                    'price' => $car->getPrice()
+                ];
             })
 
         );
