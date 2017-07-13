@@ -18,4 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('cars', 'CarsController@index');
-Route::get('cars/{id}', 'CarsController@show')->where('id', '[0-9]+');;
+Route::get('cars/{id}', 'CarsController@show')->where('id', '[0-9]+');
