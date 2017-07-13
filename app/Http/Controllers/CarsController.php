@@ -13,4 +13,15 @@ class CarsController extends Controller
     {
         $this->carRepository = $carRepository;
     }
+
+    public function index()
+    {
+        return response()->json(
+
+            $this->carRepository->getAll()->map(function($item) {
+                return collect($item)->only(['id', 'model', 'year', 'color', 'price']);
+            })
+
+        );
+    }
 }
