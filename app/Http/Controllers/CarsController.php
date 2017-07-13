@@ -45,6 +45,18 @@ class CarsController extends Controller
 
     public function show($id)
     {
+        if(empty($car = $this->carRepository->getById($id))) {
+            return abort(404);
+        }
 
+        return response()->json([
+            'id' => $car->getId(),
+            'model' => $car->getModel(),
+            'color' => $car->getColor(),
+            'year' => $car->getYear(),
+            'mileage' => $car->getMileage(),
+            'registration_number' => $car->getRegistrationNumber(),
+            'price' => $car->getPrice()
+        ]);
     }
 }
