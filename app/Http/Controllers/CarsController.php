@@ -8,7 +8,7 @@ use App\Car;
 
 class CarsController extends Controller
 {
-    private $carRepository;
+    protected $carRepository;
 
     /**
      * CarsController constructor.
@@ -26,17 +26,6 @@ class CarsController extends Controller
      */
     public function index()
     {
-        // First option
-        /*return response()->json(
-
-            $this->carRepository->getAll()->map(function($item) {
-                return collect($item)->only(['id', 'model', 'year', 'color', 'price']);
-            })
-
-        );*/
-
-
-        // Second option
         return response()->json(
 
             $this->carRepository->getAll()->map(function(Car $car) {
