@@ -24,4 +24,9 @@ class CarsController extends Controller
 
         );
     }
+
+    public function show($id)
+    {
+
+    }
 }
