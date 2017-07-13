@@ -10,11 +10,20 @@ class CarsController extends Controller
 {
     private $carRepository;
 
+    /**
+     * CarsController constructor.
+     * @param CarRepository $carRepository
+     */
     public function __construct(CarRepository $carRepository)
     {
         $this->carRepository = $carRepository;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         // First option
@@ -43,6 +52,12 @@ class CarsController extends Controller
         );
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|void
+     */
     public function show($id)
     {
         if(empty($car = $this->carRepository->getById($id))) {
