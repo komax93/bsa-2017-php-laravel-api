@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\CarRepository;
-use Illuminate\Http\Request;
 use App\Car;
 
 class CarsController extends Controller
 {
+    /**
+     * @var CarRepository
+     */
     protected $carRepository;
 
     /**
@@ -50,7 +52,7 @@ class CarsController extends Controller
     public function show($id)
     {
         if(empty($car = $this->carRepository->getById($id))) {
-            return abort(404);
+            return response()->json(['error' => 'car not found'], 404);
         }
 
         return response()->json([

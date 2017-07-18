@@ -2,12 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\CarRepository;
 use Illuminate\Http\Request;
+use App\Repositories\CarRepository;
 use App\Car;
 
-class AdminController extends CarsController
+class AdminController extends Controller
 {
+    /**
+     * @var CarRepository
+     */
+    protected $carRepository;
+
+    /**
+     * AdminController constructor.
+     * @param CarRepository $carRepository
+     */
+    public function __construct(CarRepository $carRepository)
+    {
+        $this->carRepository = $carRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,17 +29,19 @@ class AdminController extends CarsController
      */
     public function index()
     {
-        return parent::index();
-    }
+        return response()->json(
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+            $this->carRepository->getAll()->map(function(Car $car) {
+                return [
+                    'id' => $car->getId(),
+                    'model' => $car->getModel(),
+                    'color' => $car->getColor(),
+                    'year' => $car->getYear(),
+                    'price' => $car->getPrice()
+                ];
+            })
+
+        );
     }
 
     /**
@@ -36,7 +52,9 @@ class AdminController extends CarsController
      */
     public function store(Request $request)
     {
+        $result = $request->all();
 
+        return $this->carRepository->addItem(new Car($result));
     }
 
     /**
@@ -47,18 +65,19 @@ class AdminController extends CarsController
      */
     public function show($id)
     {
-        return parent::show($id);
-    }
+        if(empty($car = $this->carRepository->getById($id))) {
+            return response()->json(['error' => 'car not found'], 404);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return response()->json([
+            'id' => $car->getId(),
+            'model' => $car->getModel(),
+            'color' => $car->getColor(),
+            'year' => $car->getYear(),
+            'mileage' => $car->getMileage(),
+            'registration_number' => $car->getRegistrationNumber(),
+            'price' => $car->getPrice()
+        ]);
     }
 
     /**
@@ -70,7 +89,18 @@ class AdminController extends CarsController
      */
     public function update(Request $request, $id)
     {
-        //
+        if(empty($carArray = $this->carRepository->getById($id))) {
+            return response()->json(['error' => 'car not found'], 404);
+        }
+
+        $carArray = $carArray->toArray();
+        $requestArray = $request->toArray();
+
+        foreach($requestArray as $key => $value) {
+            $carArray[$key] = $value;
+        }
+
+        return $this->carRepository->update(new Car($carArray));
     }
 
     /**
@@ -81,6 +111,10 @@ class AdminController extends CarsController
      */
     public function destroy($id)
     {
-        //
+        if(empty($carArray = $this->carRepository->getById($id))) {
+            return response()->json(['error' => 'car not found'], 404);
+        }
+
+        return $this->carRepository->delete($id);
     }
 }
